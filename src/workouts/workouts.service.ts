@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateWorkoutDto, WorkoutCheck } from './workout.dto';
 
 @Injectable()
@@ -15,6 +15,14 @@ export class WorkoutsService {
     const yyyy = now.getFullYear();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
+    const dateStr = `${yyyy}-${mm}-${dd}`;
+
+    const duplicate = this.workouts.find(
+      (w) => w.date === dateStr && w.workoutType === dto.workoutType,
+    );
+    if (duplicate) {
+      throw new ConflictException('오늘 이미 기록된 운동 종류입니다');
+    }
 
     const newWorkout: WorkoutCheck = {
       id: this.idCounter++,

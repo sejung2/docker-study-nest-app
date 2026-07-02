@@ -1,5 +1,5 @@
-import { ConflictException, Injectable } from '@nestjs/common';
-import { CreateWorkoutDto, WorkoutCheck } from './workout.dto';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateWorkoutDto, UpdateWorkoutDto, WorkoutCheck, WorkoutType } from './workout.dto';
 
 @Injectable()
 export class WorkoutsService {
@@ -28,11 +28,36 @@ export class WorkoutsService {
       id: this.idCounter++,
       workoutType: dto.workoutType,
       bodyParts: dto.bodyParts ?? [],
-      date: `${yyyy}-${mm}-${dd}`,
+      date: dateStr,
       createdAt: now,
     };
 
     this.workouts.push(newWorkout);
     return newWorkout;
+  }
+
+  update(id: number, dto: UpdateWorkoutDto): WorkoutCheck {
+    const workout = this.workouts.find((w) => w.id === id);
+    if (!workout) {
+      throw new NotFoundException(`Workout with id ${id} not found`);
+    }
+    if (dto.workoutType !== undefined) {
+      workout.workoutType = dto.workoutType;
+    }
+    if (dto.bodyParts !== undefined) {
+      workout.bodyParts = dto.bodyParts;
+    }
+    if (workout.workoutType === WorkoutType.SPORTS) {
+      workout.bodyParts = [];
+    }
+    return workout;
+  }
+
+  delete(id: number): void {
+    const index = this.workouts.findIndex((w) => w.id === id);
+    if (index === -1) {
+      throw new NotFoundException(`Workout with id ${id} not found`);
+    }
+    this.workouts.splice(index, 1);
   }
 }

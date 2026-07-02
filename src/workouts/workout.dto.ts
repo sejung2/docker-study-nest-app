@@ -17,10 +17,15 @@ export class CreateWorkoutDto {
   bodyParts?: BodyPart[];
 }
 
+export class UpdateWorkoutDto {
+  workoutType?: WorkoutType;
+  bodyParts?: BodyPart[];
+}
+
 export interface WorkoutCheck {
   id: number;
   workoutType: WorkoutType;
-  bodyParts?: BodyPart[];
+  bodyParts: BodyPart[];
   date: string;
   createdAt: Date;
 }

@@ -18,7 +18,6 @@ function toNote(record: NoteRecord): Note {
     title: record.title,
     content: record.content,
     createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
   };
 }
 
@@ -29,7 +28,6 @@ function toWorkout(record: WorkoutRecord): WorkoutCheck {
     bodyParts: record.bodyParts as WorkoutCheck['bodyParts'],
     date: record.date,
     createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
   };
 }
 
@@ -55,8 +53,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
         id text PRIMARY KEY,
         title text NOT NULL,
         content text NOT NULL,
-        created_at timestamptz NOT NULL DEFAULT NOW(),
-        updated_at timestamptz NOT NULL DEFAULT NOW()
+        created_at timestamptz NOT NULL DEFAULT NOW()
       );
 
       CREATE TABLE IF NOT EXISTS workouts (
@@ -65,7 +62,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
         body_parts text[] NOT NULL DEFAULT '{}'::text[],
         workout_date date NOT NULL,
         created_at timestamptz NOT NULL DEFAULT NOW(),
-        updated_at timestamptz NOT NULL DEFAULT NOW(),
         CONSTRAINT workouts_unique_per_day UNIQUE (workout_date, workout_type)
       );
     `);
@@ -118,7 +114,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       .set({
         ...(dto.title !== undefined ? { title: dto.title } : {}),
         ...(dto.content !== undefined ? { content: dto.content } : {}),
-        updatedAt: new Date(),
       })
       .where(eq(schema.notes.id, id))
       .returning();
@@ -196,7 +191,6 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       .set({
         ...(dto.workoutType !== undefined ? { workoutType: dto.workoutType } : {}),
         bodyParts: nextBodyParts,
-        updatedAt: new Date(),
       })
       .where(eq(schema.workouts.id, id))
       .returning();

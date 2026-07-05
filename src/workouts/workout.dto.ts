@@ -28,5 +28,4 @@ export interface WorkoutCheck {
   bodyParts: BodyPart[];
   date: string;
   createdAt: Date;
-  updatedAt: Date;
 }

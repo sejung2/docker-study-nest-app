@@ -5,7 +5,6 @@ export const notes = pgTable('notes', {
   title: text('title').notNull(),
   content: text('content').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const workouts = pgTable(
@@ -16,7 +15,6 @@ export const workouts = pgTable(
     bodyParts: text('body_parts').array().notNull(),
     date: date('workout_date').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({
     workoutsUniquePerDay: uniqueIndex('workouts_unique_per_day').on(table.date, table.workoutType),

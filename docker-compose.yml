@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: nest-app-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: nest_user
+      POSTGRES_PASSWORD: nest_password
+      POSTGRES_DB: nest_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nest_user -d nest_db']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nest-app:
+    build: .
+    container_name: nest-app
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgresql://nest_user:nest_password@postgres:5432/nest_db
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres-data:

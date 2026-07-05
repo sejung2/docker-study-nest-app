@@ -13,7 +13,7 @@ COPY . .
 
 RUN yarn build
 
-FROM node:24-alpine AS PRODUCTION
+FROM node:24-alpine AS production
 
 WORKDIR /app
 

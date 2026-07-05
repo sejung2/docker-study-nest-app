@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -23,7 +22,7 @@ export class NotesController {
   }
 
   @Get(':id')
-  getNoteById(@Param('id', ParseIntPipe) id: number) {
+  getNoteById(@Param('id') id: string) {
     return this.notesService.findById(id);
   }
 
@@ -34,13 +33,13 @@ export class NotesController {
   }
 
   @Patch(':id')
-  updateNote(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateNoteDto) {
+  updateNote(@Param('id') id: string, @Body() dto: UpdateNoteDto) {
     return this.notesService.update(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteNote(@Param('id', ParseIntPipe) id: number) {
-    this.notesService.delete(id);
+  async deleteNote(@Param('id') id: string) {
+    await this.notesService.delete(id);
   }
 }

@@ -23,9 +23,10 @@ export class UpdateWorkoutDto {
 }
 
 export interface WorkoutCheck {
-  id: number;
+  id: string;
   workoutType: WorkoutType;
   bodyParts: BodyPart[];
   date: string;
   createdAt: Date;
+  updatedAt: Date;
 }

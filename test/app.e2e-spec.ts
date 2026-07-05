@@ -3,6 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
+import { DatabaseService } from '../src/db/database.service';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -10,7 +11,20 @@ describe('AppController (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(DatabaseService)
+      .useValue({
+        findAllNotes: jest.fn(),
+        findNoteById: jest.fn(),
+        createNote: jest.fn(),
+        updateNote: jest.fn(),
+        deleteNote: jest.fn(),
+        findAllWorkouts: jest.fn(),
+        createWorkout: jest.fn(),
+        updateWorkout: jest.fn(),
+        deleteWorkout: jest.fn(),
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();

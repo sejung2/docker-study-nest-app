@@ -1,54 +1,28 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { DatabaseService } from '../db/database.service';
 import type { CreateNoteDto, Note, UpdateNoteDto } from './note.dto';
 
 @Injectable()
 export class NotesService {
-  private readonly notes: Note[] = [];
-  private idCounter = 1;
+  constructor(private readonly database: DatabaseService) {}
 
-  findAll(): Note[] {
-    return this.notes;
+  async findAll(): Promise<Note[]> {
+    return this.database.findAllNotes();
   }
 
-  findById(id: number): Note {
-    const note = this.notes.find((note) => note.id === id);
-    if (!note) {
-      throw new NotFoundException(`Note with id ${id} not found`);
-    }
-    return note;
+  async findById(id: string): Promise<Note> {
+    return this.database.findNoteById(id);
   }
 
-  create(dto: CreateNoteDto): Note {
-    const newNote: Note = {
-      id: this.idCounter++,
-      title: dto.title,
-      content: dto.content,
-      createdAt: new Date(),
-    };
-
-    this.notes.push(newNote);
-    return newNote;
+  async create(dto: CreateNoteDto): Promise<Note> {
+    return this.database.createNote(dto);
   }
 
-  update(id: number, dto: UpdateNoteDto): Note {
-    const note = this.notes.find((n) => n.id === id);
-    if (!note) {
-      throw new NotFoundException(`Note with id ${id} not found`);
-    }
-    if (dto.title !== undefined) {
-      note.title = dto.title;
-    }
-    if (dto.content !== undefined) {
-      note.content = dto.content;
-    }
-    return note;
+  async update(id: string, dto: UpdateNoteDto): Promise<Note> {
+    return this.database.updateNote(id, dto);
   }
 
-  delete(id: number): void {
-    const index = this.notes.findIndex((n) => n.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Note with id ${id} not found`);
-    }
-    this.notes.splice(index, 1);
+  async delete(id: string): Promise<void> {
+    await this.database.deleteNote(id);
   }
 }

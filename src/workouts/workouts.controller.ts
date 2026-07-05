@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -29,13 +28,13 @@ export class WorkoutsController {
   }
 
   @Patch(':id')
-  updateWorkout(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateWorkoutDto) {
+  updateWorkout(@Param('id') id: string, @Body() dto: UpdateWorkoutDto) {
     return this.workoutsService.update(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteWorkout(@Param('id', ParseIntPipe) id: number) {
-    return this.workoutsService.delete(id);
+  async deleteWorkout(@Param('id') id: string) {
+    await this.workoutsService.delete(id);
   }
 }
